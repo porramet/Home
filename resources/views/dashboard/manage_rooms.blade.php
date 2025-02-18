@@ -6,6 +6,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>จัดการห้องและอาคาร</h2>
             <div class="d-flex align-items-center">
+                
                 <input class="search-bar" id="search-bar" onkeyup="searchItems()" placeholder="ค้นหาห้องหรืออาคาร" type="text"/>
                 <button class="icon-btn">
                     <i class="fas fa-cog"></i>
@@ -15,6 +16,7 @@
                 </button>
                 <img alt="Profile image" class="profile-img" src="https://placehold.co/40x40"/>
             </div>
+
         </div>
 
         <div class="row mb-4">
@@ -31,7 +33,7 @@
                 <div class="stat-card" onclick="showAvailableRooms()">
                     <i class="fas fa-door-open icon"></i>
                     <div class="details">
-                        <h3>{{ $rooms->where('status_id', 'available')->count() }}</h3>
+                        <h3>{{ $rooms->where('status_id', '2')->count() }}</h3>
                         <p>ห้องที่ใช้งานได้</p>
                     </div>
                 </div>
@@ -40,7 +42,7 @@
                 <div class="stat-card" onclick="showUnavailableRooms()">
                     <i class="fas fa-door-closed icon"></i>
                     <div class="details">
-                        <h3>{{ $rooms->where('status_id', 'occupied')->count() }}</h3>
+                        <h3>{{ $rooms->where('status_id', '1')->count() }}</h3>
                         <p>ห้องที่ใช้งานไม่ได้</p>
                     </div>
                 </div>
@@ -66,7 +68,7 @@
                                             <p>จำนวนห้อง: {{ $building->rooms->count() }}</p>
                                             <button class="btn btn-sm btn-warning" onclick="openEditBuildingModal('{{ $building->id }}', '{{ $building->building_name }}', '{{ $building->citizen_save }}')">แก้ไข</button>
                                             <button class="btn btn-sm btn-danger" onclick="confirmDeleteBuilding('{{ $building->id }}')">ลบ</button>
-<button class="btn btn-sm btn-info" onclick="window.location.href='{{ route('manage_rooms.show', $building->id) }}'">ดูห้อง</button>
+                                            <button class="btn btn-sm btn-info" onclick="window.location.href='{{ route('manage_rooms.show', $building->id) }}'">ดูห้อง</button>
 
                                         </div>
                                     </div>

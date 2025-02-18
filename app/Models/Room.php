@@ -11,8 +11,11 @@ class Room extends Model
 
     protected $table = 'rooms'; // กำหนดชื่อตารางให้แน่นอน
     protected $primaryKey = 'room_id'; // แก้จาก 'id' เป็น 'room_id'
-    public $incrementing = true; // ถ้าเป็น Auto Increment ให้กำหนดค่าเป็น true
+    public $incrementing = false; // room_id is not auto-incrementing
+
     protected $keyType = 'int'; // กำหนด type เป็น integer
+
+
 
     protected $fillable = [
         'room_name',

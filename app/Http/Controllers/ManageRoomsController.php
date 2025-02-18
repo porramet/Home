@@ -7,6 +7,9 @@ use App\Models\Room;
 use App\Models\Building;
 use App\Models\Status;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+
 
 class ManageRoomsController extends Controller
 {
@@ -35,42 +38,66 @@ class ManageRoomsController extends Controller
         return Room::all();
     }
 
+    private function generateRoomId($buildingId)
+    {
+        // Get the maximum room_id for this building
+        $maxRoomId = Room::where('building_id', $buildingId)
+                        ->max('room_id');
+        
+        // Return next available room_id
+        return $maxRoomId ? $maxRoomId + 1 : 1;
+    }
+
     public function store(Request $request)
     {
-        Log::info('Incoming request data:', $request->all());
+        try {
+            // Log incoming request data
+            Log::info('Room creation request data:', $request->all());
 
-        // Validate the incoming request
-        $request->validate([
-            'room_name' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
-            'status_id' => 'required|exists:status,status_id',
-            'building_id' => 'required|exists:buildings,building_id',
-            'class' => 'required|string|max:255',
-            'room_details' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'service_rates' => 'required|numeric|min:0',
-        ]);
+            // Validate the request
+            $validated = $request->validate([
+                'building_id' => 'required|exists:buildings,building_id',
+                'room_name' => 'required|string|max:255',
+                'capacity' => 'required|integer|min:1',
+                'class' => 'required|string|max:255',
+                'room_details' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'service_rates' => 'required|numeric|min:0',
+            ]);
 
-        // Create a new room record without setting room_id
-        $room = Room::create([
-            'room_name' => $request->room_name,
-            'capacity' => $request->capacity,
-            'status_id' => $request->status_id,
-            'building_id' => $request->building_id,
-            'class' => $request->class,
-            'room_details' => $request->room_details,
-            'service_rates' => $request->service_rates,
-            // 'room_id' will be handled by the database
-        ]);
+            // Log successful validation
+            Log::info('Room data validated successfully:', $validated);
 
-        // Handle image upload if provided
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('room_images', 'public');
-            $room->image = $imagePath;
+            // Create new room
+            $room = new Room();
+            $room->building_id = $validated['building_id'];
+            $room->room_id = $this->generateRoomId($validated['building_id']);
+            $room->room_name = $validated['room_name'];
+            $room->capacity = $validated['capacity'];
+            $room->class = $validated['class'];
+            $room->room_details = $validated['room_details'];
+            $room->service_rates = $validated['service_rates'];
+            $room->status_id = 2; // Set status to empty room
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('room_images', 'public');
+                $room->image = $imagePath;
+                Log::info('Room image uploaded:', ['path' => $imagePath]);
+            }
+
+            // Save the room
             $room->save();
-        }
+            Log::info('Room created successfully:', $room->toArray());
 
-        return redirect()->route('manage_rooms.index')->with('success', 'Room created successfully!');
+            return redirect()->back()->with('success', 'Room created successfully');
+        } catch (\Exception $e) {
+            Log::error('Error creating room: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+            return redirect()->back()->with('error', 'Failed to create room. Please try again.');
+        }
     }
 
     public function update(Request $request, $buildingId, $roomId)
@@ -100,5 +127,18 @@ class ManageRoomsController extends Controller
         }
 
         return redirect()->route('manage_rooms.index')->with('success', 'Room updated successfully!');
+    }
+
+    public function editRoom($id)
+    {
+        $room = Room::with(['building', 'status'])->findOrFail($id);
+        return response()->json($room);
+    }
+
+    public function deleteRoom($id)
+    {
+        $room = Room::findOrFail($id);
+        $room->delete();
+        return redirect()->back()->with('success', 'Room deleted successfully');
     }
 }
