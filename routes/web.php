@@ -50,6 +50,8 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     
     // Other admin routes
     Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users');
+    Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
+    Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');
     Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('booking_history');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');

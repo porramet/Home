@@ -4,16 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Building;
-use App\Models\Room; // Import the Room model
+use App\Models\Room;
+use Illuminate\Pagination\Paginator;
 
 class ManageBuildingsController extends Controller
 {
     // แสดงรายการอาคาร
-    public function index()
+    public function index(Request $request)
     {
-        $buildings = Building::all();
-        $rooms = Room::all(); // Retrieve all rooms
-        return view('dashboard.manage_rooms', compact('buildings', 'rooms')); // Pass both buildings and rooms to the view
+        $search = $request->input('search');
+        
+        $buildings = Building::when($search, function($query) use ($search) {
+            return $query->where('building_name', 'like', '%'.$search.'%')
+                       ->orWhere('citizen_save', 'like', '%'.$search.'%');
+        })->paginate(15);
+
+        return view('dashboard.manage_buildings', compact('buildings'));
     }
 
     // เพิ่มอาคาร

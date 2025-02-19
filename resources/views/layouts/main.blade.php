@@ -51,7 +51,8 @@
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-home"></i> แดชบอร์ด</a>
                     <a class="nav-link" href="{{ route('booking_db') }}"><i class="fas fa-calendar-alt"></i> การจองห้อง</a>
-                    <a class="nav-link" href="{{ route('manage_rooms') }}"><i class="fas fa-building"></i> จัดการห้องและอาคาร</a>
+                    <a class="nav-link" href="{{ route('manage_rooms.index') }}"><i class="fas fa-building"></i> จัดการห้องและอาคาร</a>
+
                     <a class="nav-link" href="{{ route('booking_history') }}"><i class="fas fa-history"></i> ประวัติการจองห้อง</a>
                     <a class="nav-link" href="{{ route('calendar') }}"><i class="fas fa-calendar"></i> ปฏิทิน</a>
                     <a class="nav-link" href="{{ route('manage_users') }}"><i class="fas fa-users-cog"></i> จัดการผู้ใช้</a>

@@ -15,8 +15,16 @@ class ManageRoomsController extends Controller
 {
     public function index()
     {
-        // Fetch all rooms and their associated buildings
-        $rooms = Room::with('building')->get();  
+        // Fetch all rooms with pagination and search
+        $rooms = Room::with('building')
+                    ->when(request('search'), function($query) {
+                        $query->where('room_name', 'like', '%'.request('search').'%')
+                              ->orWhereHas('building', function($q) {
+                                  $q->where('building_name', 'like', '%'.request('search').'%');
+                              });
+                    })
+                    ->paginate(12);
+                    
         $buildings = Building::all();
         $status = Status::all();
         
@@ -25,13 +33,44 @@ class ManageRoomsController extends Controller
 
     public function showRooms($buildingId)
     {
-        $rooms = Room::with(['building', 'status'])->where('building_id', $buildingId)->get();
+        // Ensure building exists and get its ID
         $building = Building::findOrFail($buildingId);
+        
+        // Get rooms for this building with search and pagination
+        // Get total counts for available and unavailable rooms
+        $totalCount = Room::where('building_id', $building->id)->count();
+        
+        $availableCount = Room::where('building_id', $building->id)
+                            ->where('status_id', 2)
+                            ->count();
+                            
+        $unavailableCount = Room::where('building_id', $building->id)
+                              ->where('status_id', 1)
+                              ->count();
+
+        // Get paginated rooms
+        $rooms = Room::with(['building', 'status'])
+                    ->where('building_id', $building->id)
+                    ->when(request('search'), function($query) {
+                        $query->where('room_name', 'like', '%'.request('search').'%');
+                    })
+                    ->paginate(12);
+                    
         $buildings = Building::all();
         $status = Status::all();
         
-        return view('dashboard.rooms', compact('rooms', 'building', 'buildings', 'status'));
+        return view('dashboard.rooms', compact(
+            'rooms', 
+            'building', 
+            'buildings', 
+            'status',
+            'totalCount',
+            'availableCount',
+            'unavailableCount'
+        ));
+
     }
+
 
     public function fetchRooms()
     {
@@ -56,7 +95,7 @@ class ManageRoomsController extends Controller
 
             // Validate the request
             $validated = $request->validate([
-                'building_id' => 'required|exists:buildings,building_id',
+                'building_id' => 'required|exists:buildings,id',
                 'room_name' => 'required|string|max:255',
                 'capacity' => 'required|integer|min:1',
                 'class' => 'required|string|max:255',
