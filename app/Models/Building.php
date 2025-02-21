@@ -9,7 +9,8 @@ class Building extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['building_name', 'citizen_save', 'date_save'];
+    protected $fillable = ['building_name', 'citizen_save', 'date_save', 'image'];
+
 
     public function rooms()
     {

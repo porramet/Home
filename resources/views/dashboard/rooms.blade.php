@@ -7,7 +7,6 @@
             <h2>จัดการห้องในอาคาร: {{ $building->building_name }}</h2>
             <div class="d-flex align-items-center">
                 <form action="{{ route('manage_rooms.show', $building->id) }}" method="GET" class="d-flex">
-
                     <input class="search-bar" placeholder="ค้นหาห้อง" type="text" name="search" value="{{ request('search') }}"/>
                     <button type="submit" class="icon-btn">
                         <i class="fas fa-search"></i>
@@ -35,12 +34,10 @@
                 </div>
             </div>
             <div class="col-md-4">
-
                 <div class="stat-card">
                     <i class="fas fa-door-open icon"></i>
                     <div class="details">
                         <h3>{{ $availableCount }}</h3>
-
                         <p>ห้องที่ใช้งานได้</p>
                     </div>
                 </div>
@@ -50,7 +47,6 @@
                     <i class="fas fa-door-closed icon"></i>
                     <div class="details">
                         <h3>{{ $unavailableCount }}</h3>
-
                         <p>ห้องที่ใช้งานไม่ได้</p>
                     </div>
                 </div>
@@ -64,27 +60,26 @@
                         <h5>รายการห้องในอาคาร {{ $building->building_name }}</h5>
                         <div>
                             <a href="{{ route('manage_rooms.index') }}" class="btn btn-secondary">กลับไปหน้าอาคาร</a>
-
                             <button class="btn btn-primary mr-2" onclick="openAddRoomModal()">เพิ่มห้อง</button>
                         </div>
-
-
-                        
                     </div>
                     <div class="card-body">
                         <div class="row">
                             @foreach($rooms as $room)
                                 <div class="col-md-3">
-                                    <div class="card room-card mb-4" data-building="{{ $building->building_name }}">
-                                        <img alt="ภาพห้อง {{ $room->room_name }}" class="card-img-top" src="{{ $room->image ? asset('storage/' . $room->image) : 'https://placehold.co/300x200' }}"/>
+                                    <div class="card room-card mb-4">
+                                        <img alt="ภาพห้อง {{ $room->room_name }}" class="card-img-top" 
+                                            src="{{ $room->image ? asset('storage/' . $room->image) : asset('images/no-picture.jpg') }}"/>
+
+
                                         <div class="card-body">
                                             <h5>{{ $room->room_name }}</h5>
                                             <p>อาคาร: {{ $building->building_name }}</p>
                                             <p>ความจุ: {{ $room->capacity }}</p>
                                             <p>สถานะ: {{ $room->status->status_name }}</p>
+                                            <a href="{{ route('manage_rooms.edit', $room->room_id) }}" class="btn btn-sm btn-warning">แก้ไข</a>
 
-                                            <button class="btn btn-sm btn-warning" onclick="openEditRoomModal('{{ $room->id }}')">แก้ไข</button>
-                                            <button class="btn btn-sm btn-danger" onclick="confirmDeleteRoom('{{ $room->id }}')">ลบ</button>
+                                            <button class="btn btn-sm btn-danger">ลบ</button>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +89,6 @@
                                     {{ $rooms->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -103,12 +97,15 @@
     </div>
 </div>
 
-
 <script>
 function openAddRoomModal() {
     $('#addRoomModal').modal('show');
 }
+
 </script>
+
+
+
 
 <!-- Add Room Modal -->
 <div class="modal fade" id="addRoomModal" tabindex="-1" role="dialog" aria-labelledby="addRoomModalLabel" aria-hidden="true">
@@ -158,6 +155,5 @@ function openAddRoomModal() {
         </div>
     </div>
 </div>
-
 
 @endsection

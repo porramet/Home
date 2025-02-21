@@ -45,8 +45,10 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::get('/manage-rooms/{buildingId}/rooms', [ManageRoomsController::class, 'showRooms'])->name('manage_rooms.show');
     Route::post('/rooms', [ManageRoomsController::class, 'store'])->name('manage_rooms.store');
     Route::get('/rooms/{id}', [ManageRoomsController::class, 'showRoomDetails'])->name('manage_rooms.details');
-    Route::get('/rooms/{id}/edit', [ManageRoomsController::class, 'editRoom'])->name('manage_rooms.edit');
-    Route::delete('/rooms/{id}', [ManageRoomsController::class, 'deleteRoom'])->name('manage_rooms.delete');
+    Route::get('/rooms/{room}/edit', [ManageRoomsController::class, 'edit'])->name('manage_rooms.edit');
+    Route::put('/rooms/{room}', [ManageRoomsController::class, 'update'])->name('manage_rooms.update');
+    Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'deleteRoom'])->name('manage_rooms.destroy');
+
     
     // Other admin routes
     Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users');

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Building;
 use App\Models\Room;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Storage;
+
 
 class ManageBuildingsController extends Controller
 {
@@ -19,7 +21,10 @@ class ManageBuildingsController extends Controller
                        ->orWhere('citizen_save', 'like', '%'.$search.'%');
         })->paginate(15);
 
-        return view('dashboard.manage_buildings', compact('buildings'));
+        $totalBuildings = Building::count();
+        
+        return view('dashboard.manage_buildings', compact('buildings', 'totalBuildings'));
+
     }
 
     // เพิ่มอาคาร
@@ -28,8 +33,10 @@ class ManageBuildingsController extends Controller
         // เพิ่ม validation สำหรับ `building_name` และ `citizen_save`
         $request->validate([
             'building_name' => 'required|string|max:255',
-            'citizen_save' => 'required|string|max:255', // ตรวจสอบว่า citizen_save ต้องไม่เป็นค่าว่าง
+            'citizen_save' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
 
         // Log the request data for debugging
         \Log::info('Building Store Request Data:', $request->all());
@@ -38,10 +45,18 @@ class ManageBuildingsController extends Controller
         $building = new Building();
         $building->building_name = $request->building_name;
         $building->citizen_save = $request->citizen_save;
-        $building->date_save = now(); // ใช้เวลาในปัจจุบัน
+        $building->date_save = now();
+        
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('buildings', 'public');
+            $building->image = $imagePath;
+        }
+
         $building->save();
 
-        return redirect()->route('manage.buildings')->with('success', 'Building added successfully.');
+
+        return redirect()->route('manage_rooms.index')->with('success', 'Building added successfully.');
+
     }
 
     public function update(Request $request, $id)
@@ -54,9 +69,21 @@ class ManageBuildingsController extends Controller
 
         $building->building_name = $request->building_name;
         $building->citizen_save = $request->citizen_save;
+        
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($building->image && Storage::disk('public')->exists($building->image)) {
+                Storage::disk('public')->delete($building->image);
+            }
+            
+            $imagePath = $request->file('image')->store('buildings', 'public');
+            $building->image = $imagePath;
+        }
+
         $building->save();
 
-        return redirect()->route('manage.buildings')->with('success', 'Building updated successfully.');
+
+        return redirect()->route('manage_rooms.index')->with('success', 'Building updated successfully.');
     }
 
     public function destroy($id)
