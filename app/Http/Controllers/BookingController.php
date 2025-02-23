@@ -10,39 +10,31 @@ class BookingController extends Controller
 {
     public function index()
     {
-        $rooms = Room::all(); // Fetch all available rooms
+        // Fetch the list of rooms from the database
+        $rooms = Room::with('status')->get(); // Retrieve all rooms with status
+
+
+        // Pass the rooms to the booking view
         return view('booking', compact('rooms'));
     }
 
-    public function create(Request $request)
+    public function bookRoom($id)
     {
-        // Validate the incoming request
-        $request->validate([
-            'room' => 'required',
-            'date' => 'required|date',
-            'time' => 'required',
-        ]);
+        // Logic to handle the booking process
+        $room = Room::find($id);
+        
+        if (!$room) {
+            return redirect()->back()->with('error', 'Room not found.');
+        }
 
-        // Create a new booking record
+        // Here you would typically handle the booking logic, such as creating a booking record
         Booking::create([
-            'room' => $request->room,
-            'user' => auth()->user()->name, // Assuming the user is authenticated
-            'date' => $request->date,
-            'time' => $request->time,
-            'status' => 'confirmed', // Default status
+            'room_id' => $room->id,
+            'user_id' => auth()->id(), // Assuming the user is authenticated
+            'booking_date' => now(), // Example booking date
         ]);
 
-        // Redirect back with a success message
-        return redirect()->route('booking')->with('success', 'Booking created successfully!');
+        return redirect()->route('booking')->with('success', 'Room booked successfully!');
     }
 
-    public function update(Request $request, $id)
-    {
-        // Logic to update an existing booking
-    }
-
-    public function delete($id)
-    {
-        // Logic to delete a booking
-    }
 }

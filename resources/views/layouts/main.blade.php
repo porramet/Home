@@ -18,9 +18,11 @@
 
     <style>
         /* Existing styles */
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            background-image: url('{{ asset('images/bg-1.jpg') }}');
+            background-size: cover;
+            background-position: center;
         }
         .sidebar {
             background-color: #fff;

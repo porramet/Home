@@ -1,26 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\{
-    BookingController,
     Booking_dbController,
     Auth\RegisterController,
     Auth\LoginController,
     UserController,
     DashboardController,
+    ManageBuildingsController,
     ManageRoomsController,
-    BookingHistoryController,
-    CalendarController,
     ManageUsersController,
-    ManageBuildingsController
+    BuildingController,
+    CalendarController,
+    BookingController,
+    BookingHistoryController
 };
+
+
 
 // Public routes
 Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+Route::get('/booking', [BuildingController::class, 'index'])->name('booking');
+Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms']);
+Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
+Route::get('/buildings/{id}', [BuildingController::class, 'show'])->name('buildings.show'); // Route for showing a specific building
+Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms'])->name('buildings.fetchRooms'); // Route to fetch rooms for a specific building
+
+
 Route::get('/how-to-use', function () { return view('how_to_use'); });
 Route::get('/usage', function () { return view('usage'); });
 Route::get('/contact', function () { return view('contact'); });
@@ -49,7 +59,6 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::put('/rooms/{room}', [ManageRoomsController::class, 'update'])->name('manage_rooms.update');
     Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'deleteRoom'])->name('manage_rooms.destroy');
 
-    
     // Other admin routes
     Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users');
     Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
@@ -72,4 +81,4 @@ Route::middleware('auth')->group(function () {
 });
 
 // Booking routes
-Route::post('/booking', [BookingController::class, 'create'])->name('booking.create');
+Route::post('/book-room/{id}', [BookingController::class, 'bookRoom'])->name('book.room'); // Route for booking a room

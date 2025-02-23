@@ -15,7 +15,8 @@ class RoomSeeder extends Seeder
         // ลoop เพื่อสร้างห้องตัวอย่าง
         for ($i = 0; $i < 10; $i++) {
             DB::table('rooms')->insert([
-                'building_id' => $faker->numberBetween(1, 5), // สมมุติว่าเรามี 5 อาคาร
+                'building_id' => $faker->numberBetween(1, 3), // สมมุติว่าเรามี 3 อาคาร
+
                 'room_id' => $faker->unique()->numberBetween(1, 100), // รหัสห้องที่ไม่ซ้ำกัน
                 'room_name' => $faker->word, // ชื่อห้อง
                 'class' => $faker->word, // ชั้น
