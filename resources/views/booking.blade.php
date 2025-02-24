@@ -78,9 +78,10 @@
 
                         <div class="p-2 ">
                             <div class="flex justify-between">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="bookRoom({{ $room->id }})">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="showBookingForm({{ $room->id }})">
                                     จอง
                                 </button>
+
                                 <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                                     ดูรายละเอียดห้อง
                                 </button>
@@ -91,7 +92,21 @@
             </div>
         </div>
     </section>
+
+    <!-- Booking Form Modal -->
+    <div id="bookingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">แบบฟอร์มการจองห้อง</h3>
+                <button onclick="closeBookingForm()" class="text-gray-500 hover:text-gray-700">
+                    &times;
+                </button>
+            </div>
+            @include('partials.booking-form')
+        </div>
+    </div>
 @endsection
+
 
 @push('scripts')
 <script>
@@ -155,7 +170,19 @@
         document.getElementById('backToBuildings').classList.remove('hidden');
     }
 
+    let currentRoomId = null;
+
+    function showBookingForm(roomId) {
+        currentRoomId = roomId;
+        document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingForm() {
+        document.getElementById('bookingModal').classList.add('hidden');
+    }
+
     function showBuildings() {
+
         // แสดงอาคารทั้งหมด
         document.querySelectorAll('.building').forEach(building => {
             building.classList.remove('hidden');

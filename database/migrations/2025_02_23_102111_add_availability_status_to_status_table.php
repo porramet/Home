@@ -27,8 +27,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('status', function (Blueprint $table) {
-            //
+            $table->dropColumn('availability_status'); // Remove availability_status column
         });
-        $table->dropColumn('availability_status'); // Remove availability_status column
     }
 };

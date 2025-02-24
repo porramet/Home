@@ -18,6 +18,7 @@ return new class extends Migration
                 $table->id('status_id'); // รหัสสถานะ
                 $table->string('status_name'); // ชื่อสถานะ
                 $table->timestamps();
+                
             });
     }
 

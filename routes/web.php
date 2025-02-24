@@ -13,9 +13,11 @@ use App\Http\Controllers\{
     ManageUsersController,
     BuildingController,
     CalendarController,
-    BookingController,
-    BookingHistoryController
+    BookingHistoryController,
+    BookingController
 };
+
+
 
 
 
@@ -24,7 +26,10 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/booking', [BuildingController::class, 'index'])->name('booking');
+Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::get('/bookings/{id}/form', [BookingController::class, 'showBookingForm'])->name('bookings.form');
+
 Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms']);
 Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
 Route::get('/buildings/{id}', [BuildingController::class, 'show'])->name('buildings.show'); // Route for showing a specific building

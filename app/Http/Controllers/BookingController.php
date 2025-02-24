@@ -3,38 +3,67 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Booking; // Ensure the Booking model is imported
-use App\Models\Room; // Ensure the Room model is imported
+use App\Models\Booking;
+use App\Models\Room;
+use App\Models\Building;
 
 class BookingController extends Controller
 {
     public function index()
     {
-        // Fetch the list of rooms from the database
-        $rooms = Room::with('status')->get(); // Retrieve all rooms with status
+        // Fetch the list of buildings and rooms from the database
+        $buildings = Building::with('rooms')->get();
+        $rooms = Room::with('status')->get();
 
-
-        // Pass the rooms to the booking view
-        return view('booking', compact('rooms'));
+        // Pass the buildings and rooms to the booking view
+        return view('booking', compact('buildings', 'rooms'));
     }
 
-    public function bookRoom($id)
+    public function store(Request $request)
     {
-        // Logic to handle the booking process
-        $room = Room::find($id);
-        
-        if (!$room) {
-            return redirect()->back()->with('error', 'Room not found.');
-        }
-
-        // Here you would typically handle the booking logic, such as creating a booking record
-        Booking::create([
-            'room_id' => $room->id,
-            'user_id' => auth()->id(), // Assuming the user is authenticated
-            'booking_date' => now(), // Example booking date
+        $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+            'booking_start' => 'required|date|after:now',
+            'booking_end' => 'required|date|after:booking_start',
+            'reason' => 'required|string|max:255',
+            'terms' => 'accepted'
         ]);
 
-        return redirect()->route('booking')->with('success', 'Room booked successfully!');
+        // Handle authenticated vs external users
+        $bookingData = [
+            'room_id' => $request->room_id,
+            'booking_start' => $request->booking_start,
+            'booking_end' => $request->booking_end,
+            'reason' => $request->reason,
+            'status_id' => 1, // Default status: Pending
+            'payment_status' => 'unpaid'
+        ];
+
+        if (auth()->check()) {
+            $bookingData['user_id'] = auth()->id();
+            $bookingData['is_external'] = false;
+        } else {
+            $request->validate([
+                'external_name' => 'required|string|max:255',
+                'external_email' => 'required|email|max:255',
+                'external_phone' => 'required|string|max:20'
+            ]);
+            
+            $bookingData['external_name'] = $request->external_name;
+            $bookingData['external_email'] = $request->external_email;
+            $bookingData['external_phone'] = $request->external_phone;
+            $bookingData['is_external'] = true;
+        }
+
+        // Create the booking
+        Booking::create($bookingData);
+
+        return redirect()->route('booking')->with('success', 'Your booking request has been submitted successfully!');
     }
 
+    public function showBookingForm($id)
+    {
+        $room = Room::findOrFail($id);
+        return view('booking-form', compact('room'));
+    }
 }
