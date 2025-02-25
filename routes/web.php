@@ -25,16 +25,18 @@ use App\Http\Controllers\{
 Route::get('/', function () {
     return view('index');
 });
-
+Route::post('/booking/submit', [BookingController::class, 'submitBooking'])->name('booking.submit');
 Route::get('/booking', [BookingController::class, 'index'])->name('booking');
-<<<<<<< HEAD
+Route::get('/booking/{room_id}', [BookingController::class, 'showBookingForm'])->name('booking.form');
 Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-Route::get('/bookings/{id}/form', [BookingController::class, 'showBookingForm'])->name('bookings.form');
-=======
+Route::get('/bookings/{id}', [BookingController::class, 'showBookingForm'])->name('bookings.show');
+
+Route::get('/booking/{id}', [BookingController::class, 'showBookingForm'])->name('booking.form');
+
 //Route::get('/booking/{room_id}', [BookingController::class, 'store'])->name('booking');
 Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 Route::get('/bookings/{id}', [BookingController::class, 'showBookingForm'])->name('bookings.show');
->>>>>>> 9aec6b7 (Initial commit)
+
 
 Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms']);
 Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
@@ -71,7 +73,6 @@ Route::middleware(['auth', 'can:admin-only'])->group(function () {
     Route::delete('/manage_rooms/{room}', [ManageRoomsController::class, 'deleteRoom'])->name('manage_rooms.destroy');
 
     // Other admin routes
-    Route::get('/manage-users', [ManageUsersController::class, 'index'])->name('manage_users');
     Route::put('/manage-users/{id}', [ManageUsersController::class, 'update'])->name('manage_users.update');
     Route::delete('/manage-users/{id}', [ManageUsersController::class, 'destroy'])->name('manage_users.destroy');
     Route::get('/booking_db', [Booking_dbController::class, 'index'])->name('booking_db');

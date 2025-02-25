@@ -30,8 +30,6 @@ class RoomSeeder extends Seeder
             ]);
         }
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 9aec6b7 (Initial commit)
+

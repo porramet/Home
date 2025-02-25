@@ -27,8 +27,5 @@ class UserSeeder extends Seeder
                 'role' => 'user'
             ]);
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 9aec6b7 (Initial commit)

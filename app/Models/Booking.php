@@ -22,7 +22,15 @@ class Booking extends Model
         'reason',
         'total_price',
         'payment_status',
-        'is_external'
+        'is_external',
+        'fullname',
+        'phone',
+        'email',
+        'status',
+        'department',
+        'attendees',
+        'purpose'
+
     ];
 
 }
