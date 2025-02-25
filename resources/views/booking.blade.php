@@ -44,6 +44,7 @@
                 <!-- End of Building Section -->
 
                 @foreach($rooms as $room)
+<<<<<<< HEAD
                     <div class="bg-white rounded-lg shadow-md overflow-hidden relative flex flex-col hidden rooms" id="{{ $room->building_id }}">
                         <img alt="{{ $room->room_name }}" class="w-full h-48 object-cover" height="400" src="{{ file_exists(public_path($room->image)) ? asset($room->image) : asset('images/no-picture.jpg') }}" width="600"/>
                         <div class="absolute top-2 right-2 text-white text-lg font-semibold px-1 py-1 rounded
@@ -89,11 +90,59 @@
                         </div>
                     </div>
                 @endforeach
+=======
+                <div class="bg-white rounded-lg shadow-md overflow-hidden relative flex flex-col hidden rooms" id="{{ $room->building_id }}">
+                    <img alt="{{ $room->room_name }}" class="w-full h-48 object-cover" height="400" src="{{ file_exists(public_path($room->image)) ? asset($room->image) : asset('images/no-picture.jpg') }}" width="600"/>
+                    <div class="absolute top-2 right-2 text-white text-lg font-semibold px-1 py-1 rounded
+                        @if($room->status->status_name === 'ไม่ว่าง') bg-red-500
+                        @elseif($room->status->status_name === 'ว่าง') bg-green-500
+                        @elseif($room->status->status_name === 'ไม่พร้อมใช้งาน') bg-blue-500
+                        @endif">
+                        {{ $room->status->status_name }}
+                    </div>
+
+                    <div class="p-4 flex-grow">
+                        <div class="flex items-center mb-2">
+                            <span class="bg-blue-500 text-white text-sm font-semibold px-2.5 py-0.5 rounded">
+                                ชั้น {{ $room->class }}
+                            </span>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            {{ $room->room_name }}
+                        </h2>
+                        <div class="relative">
+                            <p class="text-gray-600 text-base mt-2 h-12 overflow-hidden">
+                                {{ $room->room_details }}
+                            </p>
+                            <div class="text-gray-600 text-base mt-2">
+                                ความจุ: {{ $room->capacity }} คน
+                            </div>
+                            <div class="text-red-500 text-base mt-2">
+                                ราคา: {{ $room->service_rates }} บาท/คืน
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2">
+                        <div class="flex justify-between">
+                            <a href="{{ route('bookings.show', $room->room_id) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                จอง
+                            </a>                            
+                            
+                            <button class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                                ดูรายละเอียดห้อง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+>>>>>>> 9aec6b7 (Initial commit)
             </div>
         </div>
     </section>
 
     <!-- Booking Form Modal -->
+<<<<<<< HEAD
     <div id="bookingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
             <div class="flex justify-between items-center mb-4">
@@ -105,6 +154,9 @@
             @include('partials.booking-form')
         </div>
     </div>
+=======
+    <!-- Removed modal logic as we are navigating directly to the booking form -->
+>>>>>>> 9aec6b7 (Initial commit)
 @endsection
 
 
@@ -172,6 +224,7 @@
 
     let currentRoomId = null;
 
+<<<<<<< HEAD
     function showBookingForm(roomId) {
         currentRoomId = roomId;
         document.getElementById('bookingModal').classList.remove('hidden');
@@ -180,6 +233,9 @@
     function closeBookingForm() {
         document.getElementById('bookingModal').classList.add('hidden');
     }
+=======
+    <!-- Removed JavaScript functions related to modal display -->
+>>>>>>> 9aec6b7 (Initial commit)
 
     function showBuildings() {
 

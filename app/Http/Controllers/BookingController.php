@@ -58,12 +58,23 @@ class BookingController extends Controller
         // Create the booking
         Booking::create($bookingData);
 
+<<<<<<< HEAD
         return redirect()->route('booking')->with('success', 'Your booking request has been submitted successfully!');
+=======
+        return redirect('/desired-url')->with('success', 'Your booking request has been submitted successfully!');
+>>>>>>> 9aec6b7 (Initial commit)
     }
 
     public function showBookingForm($id)
     {
         $room = Room::findOrFail($id);
+<<<<<<< HEAD
         return view('booking-form', compact('room'));
     }
+=======
+        $buildings = Building::all(); // Fetch all buildings
+        return view('partials.booking-form', compact('room', 'buildings')); // Pass buildings to the view
+    }
+
+>>>>>>> 9aec6b7 (Initial commit)
 }

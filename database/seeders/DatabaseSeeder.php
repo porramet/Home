@@ -18,9 +18,16 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BuildingSeeder::class,
             RoomSeeder::class,
+<<<<<<< HEAD
             BookingSeeder::class,
             BookingHistorySeeder::class
         ]);
 
     }
 }
+=======
+
+        ]);
+    }
+}
+>>>>>>> 9aec6b7 (Initial commit)

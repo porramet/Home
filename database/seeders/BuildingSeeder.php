@@ -32,4 +32,8 @@ class BuildingSeeder extends Seeder
             Building::create($building);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 9aec6b7 (Initial commit)

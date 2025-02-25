@@ -27,8 +27,14 @@ Route::get('/', function () {
 });
 
 Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+<<<<<<< HEAD
 Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 Route::get('/bookings/{id}/form', [BookingController::class, 'showBookingForm'])->name('bookings.form');
+=======
+//Route::get('/booking/{room_id}', [BookingController::class, 'store'])->name('booking');
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::get('/bookings/{id}', [BookingController::class, 'showBookingForm'])->name('bookings.show');
+>>>>>>> 9aec6b7 (Initial commit)
 
 Route::get('/buildings/{id}/rooms', [BuildingController::class, 'fetchRooms']);
 Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index'); // Added route for buildings
